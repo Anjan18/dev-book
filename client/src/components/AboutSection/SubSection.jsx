@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
+import { makeStyles } from '@material-ui/core'
+import Grid from '@material-ui/core/Grid'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import Divider from '@material-ui/core/Divider'
 import Button from '@material-ui/core/Button'
 
 import SectionDetails from 'components/AboutSection/SectionDetails'
+
+const NewDetailForm = lazy(() => import('./NewDetailForm'))
 
 class Section {
 	constructor(name, Component) {
@@ -15,31 +20,62 @@ class Section {
 		this.props.buttonText = this.name
 		return this
 	}
+
+	addFormField(fields) {
+		this.formFields = fields
+		return this
+	}
 }
 
-const SubSection = ({ buttonText }) => {
+const useStyles = makeStyles(({ spacing }) => ({
+	buttonStyle: {
+		marginTop: spacing(4),
+	},
+	dividerStyle: {
+		marginTop: spacing(2),
+		height: spacing(0.3),
+		width: '100%',
+	},
+}))
+
+const SubSection = ({ buttonText, formFields }) => {
+	const { buttonStyle, dividerStyle } = useStyles()
+
+	console.log(formFields)
+
 	return (
 		<>
 			<SectionDetails />
-			<Divider light />
-			<Button variant='contained' color='secondary'>
-				Add a new {buttonText}
-			</Button>
+			<Divider className={dividerStyle} />
+
+			<Grid container justify='flex-end'>
+				<Grid item>
+					<Button variant='contained' color='secondary' className={buttonStyle}>
+						Add a new {buttonText}
+					</Button>
+				</Grid>
+			</Grid>
+
+			<Suspense fallback={<CircularProgress />}>
+				<NewDetailForm formFields={formFields} />
+			</Suspense>
 		</>
 	)
 }
 
 const addButtonText = text => ({ buttonText: `Add a new ${text}` })
 
-const education = new Section('Education', SubSection).addProps(
-	addButtonText('School')
-)
-const experience = new Section('Experience', SubSection).addProps(
-	addButtonText('Experience')
-)
-const placesLived = new Section('Places Lived', SubSection).addProps(
-	addButtonText('Place')
-)
+const education = new Section('Education', SubSection)
+	.addProps(addButtonText('School'))
+	.addFormField(['School'])
+
+const experience = new Section('Experience', SubSection)
+	.addProps(addButtonText('Experience'))
+	.addFormField(['Company'])
+
+const placesLived = new Section('Places Lived', SubSection)
+	.addProps(addButtonText('Place'))
+	.addFormField(['city', 'town', 'country'])
 
 const options = [education, experience, placesLived]
 
