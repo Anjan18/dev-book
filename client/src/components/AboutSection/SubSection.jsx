@@ -11,8 +11,8 @@ class Section {
 	}
 
 	addProps(props) {
-		// this.props = props
-		console.log(this)
+		this.props = props
+		this.props.buttonText = this.name
 		return this
 	}
 }
@@ -29,15 +29,17 @@ const SubSection = ({ buttonText }) => {
 	)
 }
 
-const education = new Section('Education', SubSection).addProps({
-	buttonText: this.name,
-})
-const experience = new Section('Experience', SubSection).addProps({
-	buttonText: this.name,
-})
-const placesLived = new Section('Places Lived', SubSection).addProps({
-	buttonText: this.name,
-})
+const addButtonText = text => ({ buttonText: `Add a new ${text}` })
+
+const education = new Section('Education', SubSection).addProps(
+	addButtonText('School')
+)
+const experience = new Section('Experience', SubSection).addProps(
+	addButtonText('Experience')
+)
+const placesLived = new Section('Places Lived', SubSection).addProps(
+	addButtonText('Place')
+)
 
 const options = [education, experience, placesLived]
 
