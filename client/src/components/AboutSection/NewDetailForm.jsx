@@ -2,47 +2,40 @@ import React from 'react'
 import { Formik, Form, Field } from 'formik'
 import { Button, LinearProgress } from '@material-ui/core'
 import { TextField } from 'formik-material-ui'
-import { nanoid } from 'nanoid'
 
-const NewDetailForm = ({ formFields }) => {
+const NewDetailForm = ({ formFields, doneAdding }) => {
 	const inputValues = {}
 
 	formFields.forEach(item => (inputValues[`${item}`] = ''))
 
-	console.log(inputValues)
-
 	return (
 		<Formik
 			initialValues={inputValues}
-			validate={values => {
-				const errors = {}
-				return errors
-			}}
 			onSubmit={(values, { setSubmitting }) => {
-				setTimeout(() => {
-					setSubmitting(false)
-					alert(JSON.stringify(values, null, 2))
-				}, 500)
+				console.log(values)
+				setSubmitting(false)
+				doneAdding(false)
 			}}
 		>
 			{({ submitForm, isSubmitting }) => (
 				<Form>
 					{formFields.map(item => (
-						<>
-							{' '}
+						<div key={item}>
 							<Field
-								key={nanoid()}
+								type='text'
 								component={TextField}
 								name={item}
-								type='text'
+								placeholder={item}
 								label={item}
-							/>{' '}
-							<br />{' '}
-						</>
+							/>
+							<br />
+						</div>
 					))}
 
 					{isSubmitting && <LinearProgress />}
+
 					<br />
+
 					<Button
 						variant='contained'
 						color='primary'

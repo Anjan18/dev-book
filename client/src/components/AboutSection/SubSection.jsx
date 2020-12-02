@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react'
+import React, { Suspense, lazy, useState } from 'react'
 import { makeStyles } from '@material-ui/core'
 import Grid from '@material-ui/core/Grid'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -41,7 +41,7 @@ const useStyles = makeStyles(({ spacing }) => ({
 const SubSection = ({ buttonText, formFields }) => {
 	const { buttonStyle, dividerStyle } = useStyles()
 
-	console.log(formFields)
+	const [isAddingNewDetail, setIsAddingNewDetail] = useState(false)
 
 	return (
 		<>
@@ -50,15 +50,23 @@ const SubSection = ({ buttonText, formFields }) => {
 
 			<Grid container justify='flex-end'>
 				<Grid item>
-					<Button variant='contained' color='secondary' className={buttonStyle}>
+					<Button
+						variant='contained'
+						color='secondary'
+						className={buttonStyle}
+						onClick={() => setIsAddingNewDetail(true)}
+						disabled={isAddingNewDetail}
+					>
 						Add a new {buttonText}
 					</Button>
 				</Grid>
 			</Grid>
 
-			<Suspense fallback={<CircularProgress />}>
-				<NewDetailForm formFields={formFields} />
-			</Suspense>
+			{isAddingNewDetail && (
+				<Suspense fallback={<CircularProgress />}>
+					<NewDetailForm formFields={formFields} doneAdding={setIsAddingNewDetail} />
+				</Suspense>
+			)}
 		</>
 	)
 }
