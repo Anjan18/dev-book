@@ -1,6 +1,8 @@
 import { SET_CURRENT_USER } from 'redux/actions/types'
 import setAuthToken from 'redux/utils/setAuthToken'
 import axios from 'axios'
+import { useMutation } from '@apollo/client'
+import LOG_IN from 'mutations/loginMutation'
 import jwtDecode from 'jwt-decode'
 
 export const setCurrentUser = decoded => {
@@ -20,21 +22,23 @@ const loginUser = (token, dispatch) => {
 }
 
 export const loginUserAction = userData => dispatch => {
-	axios
-		.post('/api/user/login', userData)
-		.then(({ data: { token } }) => {
-			loginUser(token, dispatch)
-		})
-		.catch(response => console.log(response))
+	const mu = useMutation(LOG_IN)
+	console.log(mu)
+	// axios
+	// 	.post('/api/user/login', userData)
+	// 	.then(({ data: { token } }) => {
+	// 		loginUser(token, dispatch)
+	// 	})
+	// 	.catch(response => console.log(response))
 }
 
 export const registerUserAction = userData => dispatch => {
-	axios
-		.post('/api/user/register', userData)
-		.then(({ data: { token } }) => {
-			loginUser(token, dispatch)
-		})
-		.catch(err => console.log(err))
+	// axios
+	// 	.post('/api/user/register', userData)
+	// 	.then(({ data: { token } }) => {
+	// 		loginUser(token, dispatch)
+	// 	})
+	// 	.catch(err => console.log(err))
 }
 
 export const logoutUser = () => dispatch => {

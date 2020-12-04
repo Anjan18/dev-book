@@ -2,39 +2,25 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import jwtDecode from 'jwt-decode'
-
+import { ApolloProvider } from '@apollo/client'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import App from 'App'
+import store from 'redux/store/store'
+import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 // import reportWebVitals from './reportWebVitals'
 
-import store from 'redux/store/store'
-
-import setAuthToken from 'redux/utils/setAuthToken'
-import { setCurrentUser } from 'redux/actions/authActions'
-
-import * as serviceWorkerRegistration from './serviceWorkerRegistration'
-
-const token = localStorage.jwtToken
-
-// check for token
-if (token) {
-	// set auth token header auth
-	setAuthToken(token)
-
-	// decode token and get user info
-	const decodedToken = jwtDecode(token)
-	store.dispatch(setCurrentUser(decodedToken))
-}
+import client from 'redux/utils/setAuthToken'
 
 ReactDOM.render(
-	<CssBaseline>
-		<Provider store={store}>
-			<Router>
-				<App />
-			</Router>
-		</Provider>
-	</CssBaseline>,
+	<ApolloProvider client={client}>
+		<CssBaseline>
+			<Provider store={store}>
+				<Router>
+					<App />
+				</Router>
+			</Provider>
+		</CssBaseline>
+	</ApolloProvider>,
 	document.getElementById('root')
 )
 

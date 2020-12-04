@@ -1,10 +1,19 @@
-import axios from 'axios'
+import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
+import { setContext } from '@apollo/client/link/context'
 
-const setAuthToken = token => {
-	if (token) {
-		axios.defaults.headers.common.authorization = token
-	} else {
-		delete axios.defaults.headers.common.authorization
+const httpLink = createHttpLink({ uri: 'https://localhost:3000/graphql' })
+
+const authLink = setContext((_, { headers }) => {
+	const token = localStorage.getItem('jwtToken')
+
+	return {
+		headers: { ...headers, authorization: token ? `Bearer ${token}` : '' },
 	}
-}
-export default setAuthToken
+})
+
+const client = new ApolloClient({
+	link: authLink.concat(httpLink),
+	cache: new InMemoryCache(),
+})
+
+export default client
